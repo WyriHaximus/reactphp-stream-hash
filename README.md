@@ -1,0 +1,1 @@
+# reactphp-stream-hash
