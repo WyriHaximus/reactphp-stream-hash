@@ -1,6 +1,6 @@
 {
     "name": "wyrihaximus/react-stream-hash",
-    "description": "ReactPHP stream hasher decorators",
+    "description": "On the fly hash calculator for ReactPHP streams",
     "license": "MIT",
     "authors": [
         {
