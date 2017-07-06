@@ -31,7 +31,7 @@ final class ReadableStreamHash extends EventEmitter implements ReadableStreamInt
             $this->emit('data', [$data]);
             hash_update($this->context, $data);
         });
-        $this->stream->on('close', function () {
+        $this->stream->once('close', function () {
             $this->emit('close');
             $this->emit('hash', [
                 hash_final($this->context),

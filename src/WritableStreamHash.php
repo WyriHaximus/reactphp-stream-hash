@@ -25,7 +25,7 @@ final class WritableStreamHash extends EventEmitter implements WritableStreamInt
     {
         $this->stream = $stream;
         $this->context = hash_init($hash, $options, $key);
-        $this->stream->on('close', function () {
+        $this->stream->once('close', function () {
             $this->emit('hash', [
                 hash_final($this->context),
             ]);
