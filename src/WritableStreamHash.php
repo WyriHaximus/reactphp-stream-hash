@@ -2,13 +2,11 @@
 
 namespace WyriHaximus\React\Stream\Hash;
 
-use Evenement\EventEmitterTrait;
+use Evenement\EventEmitter;
 use React\Stream\WritableStreamInterface;
 
-final class WritableStreamHash implements WritableStreamInterface
+final class WritableStreamHash extends EventEmitter implements WritableStreamInterface
 {
-    use EventEmitterTrait;
-
     /**
      * @var WritableStreamInterface
      */
