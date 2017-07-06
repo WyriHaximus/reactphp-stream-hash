@@ -33,7 +33,7 @@ final class ReadableStreamHashTest extends TestCase
         $stream->on('hash', function ($hash) use (&$catchedHash) {
             $catchedHash = $hash;
         });
-        $loop->addTimer(0.0001, function () use ($throughStream, $data) {
+        $loop->addTimer(0.001, function () use ($throughStream, $data) {
             $throughStream->write($data);
             $throughStream->end();
         });
