@@ -33,7 +33,7 @@ final class WritableStreamHashTest extends TestCase
         $stream->on('hash', function ($hash) use (&$catchedHash) {
             $catchedHash = $hash;
         });
-        $loop->futureTick(function () use ($stream, $data) {
+        $loop->addTimer(0.0001, function () use ($stream, $data) {
             $stream->write($data);
             $stream->end();
         });
