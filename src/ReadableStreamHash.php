@@ -20,21 +20,24 @@ final class ReadableStreamHash extends EventEmitter implements ReadableStreamInt
     private $context;
 
     /**
-     * WritableStreamHash constructor.
-     * @param WritableStreamInterface $stream
+     * @param ReadableStreamInterface $stream
+     * @param string                  $algo
+     * @param int                     $options
+     * @param string                  $key
      */
-    public function __construct(ReadableStreamInterface $stream, string $hash, int $options = 0, string $key = '')
+    public function __construct(ReadableStreamInterface $stream, string $algo, int $options = 0, string $key = '')
     {
         $this->stream = $stream;
-        $this->context = hash_init($hash, $options, $key);
+        $this->context = hash_init($algo, $options, $key);
         $this->stream->on('data', function ($data) {
             hash_update($this->context, $data);
             $this->emit('data', [$data]);
         });
-        $this->stream->once('close', function () {
+        $this->stream->once('close', function () use ($algo) {
             $this->emit('close');
             $this->emit('hash', [
                 hash_final($this->context),
+                $algo,
             ]);
         });
         Util::forwardEvents($stream, $this, ['error', 'end']);

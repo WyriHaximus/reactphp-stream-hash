@@ -20,10 +20,11 @@ composer require wyrihaximus/react-stream-hash
 Writable stream:
 
 ```php
+$algo = 'sha512'; // Change to any desired algo from hash_algos()
 $streamToHash = new ThroughStream();
 // Constructor supports all hash_init arguments in the same order
 $stream = new WritableStreamHash($streamToHash, $algo);
-$stream->on('hash', function ($hash) {
+$stream->on('hash', function ($hash, $algo) {
     // Do with what you need the hash for
 });
 
@@ -35,10 +36,11 @@ $stream->end('bar');
 Readable stream:
 
 ```php
+$algo = 'sha512'; // Change to any desired algo from hash_algos()
 $streamToHash = new ThroughStream();
 // Constructor supports all hash_init arguments in the same order
 $stream = new ReadableStreamHash($streamToHash, $algo);
-$stream->on('hash', function ($hash) {
+$stream->on('hash', function ($hash, $algo) {
     // Do with what you need the hash for
 });
 

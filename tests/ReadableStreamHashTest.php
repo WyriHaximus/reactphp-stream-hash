@@ -27,17 +27,20 @@ final class ReadableStreamHashTest extends TestCase
     public function testHash(string $algo, string $data)
     {
         $catchedHash = null;
+        $catchedAlgo = null;
         $loop = Factory::create();
         $throughStream = new ThroughStream();
         $stream = new ReadableStreamHash($throughStream, $algo);
-        $stream->on('hash', function ($hash) use (&$catchedHash) {
+        $stream->on('hash', function ($hash, $algo) use (&$catchedHash, &$catchedAlgo) {
             $catchedHash = $hash;
+            $catchedAlgo = $algo;
         });
         $loop->addTimer(0.001, function () use ($throughStream, $data) {
             $throughStream->write($data);
             $throughStream->end();
         });
         self::assertSame($data, await(buffer($stream), $loop));
+        self::assertSame($algo, $catchedAlgo);
         self::assertSame(hash($algo, $data), $catchedHash);
     }
 }
