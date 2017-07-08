@@ -11,27 +11,8 @@ use function React\Promise\Stream\buffer;
 
 final class ReadableStreamHashTest extends TestCase
 {
-    public function provideData()
-    {
-        foreach (hash_algos() as $algo) {
-            yield [$algo, 'a'];
-            yield [$algo, 'abc'];
-            yield [$algo, 'abcdefg'];
-            yield [$algo, 'abcdefghij'];
-            yield [$algo, 'abcdefghijklm'];
-            yield [$algo, 'abcdefghijklmnop'];
-            yield [$algo, 'abcdefghijklmnopqrst'];
-            yield [$algo, 'abcdefghijklmnopqrstuvw'];
-            yield [$algo, 'abcdefghijklmnopqrstuvwxyz'];
-            foreach (range(128, 256) as $size) {
-                yield [$algo, str_pad('a', $size)];
-            }
-            yield [$algo, str_pad('a', 1337)];
-        }
-    }
-
     /**
-     * @dataProvider provideData
+     * @dataProvider WyriHaximus\React\Tests\Stream\Hash\DataProvider::provideData
      */
     public function testHash(string $algo, string $data)
     {
@@ -59,7 +40,7 @@ final class ReadableStreamHashTest extends TestCase
     }
 
     /**
-     * @dataProvider provideData
+     * @dataProvider WyriHaximus\React\Tests\Stream\Hash\DataProvider::provideData
      */
     public function testHashHMAC(string $algo, string $data)
     {
