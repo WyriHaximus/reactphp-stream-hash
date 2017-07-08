@@ -22,10 +22,13 @@ Writable stream:
 ```php
 $algo = 'sha512'; // Change to any desired algo from hash_algos()
 $streamToHash = new ThroughStream();
-// Constructor supports all hash_init arguments in the same order
+// Constructor accepts a third $key argument in case you want a HMAC hash
 $stream = new WritableStreamHash($streamToHash, $algo);
 $stream->on('hash', function ($hash, $algo) {
     // Do with what you need the hash for
+});
+$stream->on('hash_raw', function ($hash, $algo) {
+    // Do with what you need the raw hash for
 });
 
 // Write to the stream
@@ -38,10 +41,13 @@ Readable stream:
 ```php
 $algo = 'sha512'; // Change to any desired algo from hash_algos()
 $streamToHash = new ThroughStream();
-// Constructor supports all hash_init arguments in the same order
+// Constructor accepts a third $key argument in case you want a HMAC hash
 $stream = new ReadableStreamHash($streamToHash, $algo);
 $stream->on('hash', function ($hash, $algo) {
     // Do with what you need the hash for
+});
+$stream->on('hash_raw', function ($hash, $algo) {
+    // Do with what you need the raw hash for
 });
 
 // The readable emits data when written to

@@ -20,16 +20,32 @@ final class WritableStreamHash extends EventEmitter implements WritableStreamInt
     /**
      * WritableStreamHash constructor.
      * @param WritableStreamInterface $stream
+     * @param string                  $algo
+     * @param string|null             $key
      */
-    public function __construct(WritableStreamInterface $stream, string $algo, int $options = 0, string $key = '')
+    public function __construct(WritableStreamInterface $stream, string $algo, string $key = null)
     {
         $this->stream = $stream;
-        $this->context = hash_init($algo, $options, $key);
+        $options = [$algo];
+        if ($key !== null && strlen($key) > 0) {
+            $options[] = HASH_HMAC;
+            $options[] = $key;
+        }
+        $this->context = hash_init(...$options);
         $this->stream->once('close', function () use ($algo) {
-            $this->emit('hash', [
-                hash_final($this->context),
-                $algo,
-            ]);
+            $hash = hash_final($this->context, true);
+            if (count($this->listeners('hash')) > 0) {
+                $this->emit('hash', [
+                    bin2hex($hash),
+                    $algo,
+                ]);
+            }
+            if (count($this->listeners('hash_raw')) > 0) {
+                $this->emit('hash_raw', [
+                    $hash,
+                    $algo,
+                ]);
+            }
         });
     }
 

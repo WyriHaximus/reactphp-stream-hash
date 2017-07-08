@@ -27,6 +27,7 @@ final class ReadableStreamHashTest extends TestCase
     public function testHash(string $algo, string $data)
     {
         $catchedHash = null;
+        $catchedRawHash = null;
         $catchedAlgo = null;
         $loop = Factory::create();
         $throughStream = new ThroughStream();
@@ -35,6 +36,9 @@ final class ReadableStreamHashTest extends TestCase
             $catchedHash = $hash;
             $catchedAlgo = $algo;
         });
+        $stream->on('hash_raw', function ($hash, $algo) use (&$catchedRawHash) {
+            $catchedRawHash = $hash;
+        });
         $loop->addTimer(0.001, function () use ($throughStream, $data) {
             $throughStream->write($data);
             $throughStream->end();
@@ -42,5 +46,35 @@ final class ReadableStreamHashTest extends TestCase
         self::assertSame($data, await(buffer($stream), $loop));
         self::assertSame($algo, $catchedAlgo);
         self::assertSame(hash($algo, $data), $catchedHash);
+        self::assertSame(hash($algo, $data, true), $catchedRawHash);
+    }
+
+    /**
+     * @dataProvider provideData
+     */
+    public function testHashHMAC(string $algo, string $data)
+    {
+        $key = 'foo.bar';
+        $catchedHash = null;
+        $catchedRawHash = null;
+        $catchedAlgo = null;
+        $loop = Factory::create();
+        $throughStream = new ThroughStream();
+        $stream = new ReadableStreamHash($throughStream, $algo, $key);
+        $stream->on('hash', function ($hash, $algo) use (&$catchedHash, &$catchedAlgo) {
+            $catchedHash = $hash;
+            $catchedAlgo = $algo;
+        });
+        $stream->on('hash_raw', function ($hash, $algo) use (&$catchedRawHash) {
+            $catchedRawHash = $hash;
+        });
+        $loop->addTimer(0.001, function () use ($throughStream, $data) {
+            $throughStream->write($data);
+            $throughStream->end();
+        });
+        self::assertSame($data, await(buffer($stream), $loop));
+        self::assertSame($algo, $catchedAlgo);
+        self::assertSame(hash_hmac($algo, $data, $key), $catchedHash);
+        self::assertSame(hash_hmac($algo, $data, $key, true), $catchedRawHash);
     }
 }
