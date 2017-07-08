@@ -29,7 +29,7 @@ final class ReadableStreamHashTest extends TestCase
         $stream->on('hash_raw', function ($hash, $algo) use (&$catchedRawHash) {
             $catchedRawHash = $hash;
         });
-        $loop->addTimer(0.001, function () use ($throughStream, $data) {
+        $loop->addTimer(0, function () use ($throughStream, $data) {
             $throughStream->write($data);
             $throughStream->end();
         });
@@ -58,7 +58,7 @@ final class ReadableStreamHashTest extends TestCase
         $stream->on('hash_raw', function ($hash, $algo) use (&$catchedRawHash) {
             $catchedRawHash = $hash;
         });
-        $loop->addTimer(0.001, function () use ($throughStream, $data) {
+        $loop->addTimer(0, function () use ($throughStream, $data) {
             $throughStream->write($data);
             $throughStream->end();
         });
