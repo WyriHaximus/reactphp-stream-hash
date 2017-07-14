@@ -46,6 +46,7 @@ final class WritableStreamHash extends EventEmitter implements WritableStreamInt
                     $algo,
                 ]);
             }
+            $this->emit('close');
         });
     }
 

@@ -38,7 +38,6 @@ final class ReadableStreamHash extends EventEmitter implements ReadableStreamInt
             $this->emit('data', [$data]);
         });
         $this->stream->once('close', function () use ($algo) {
-            $this->emit('close');
             $hash = hash_final($this->context, true);
             if (count($this->listeners('hash')) > 0) {
                 $this->emit('hash', [
@@ -52,6 +51,7 @@ final class ReadableStreamHash extends EventEmitter implements ReadableStreamInt
                     $algo,
                 ]);
             }
+            $this->emit('close');
         });
         Util::forwardEvents($stream, $this, ['error', 'end']);
     }
