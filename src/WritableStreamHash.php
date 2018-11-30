@@ -27,20 +27,20 @@ final class WritableStreamHash extends EventEmitter implements WritableStreamInt
     {
         $this->stream = $stream;
         $options = [$algo];
-        if ($key !== null && strlen($key) > 0) {
+        if ($key !== null && \strlen($key) > 0) {
             $options[] = HASH_HMAC;
             $options[] = $key;
         }
-        $this->context = hash_init(...$options);
-        $this->stream->once('close', function () use ($algo) {
-            $hash = hash_final($this->context, true);
-            if (count($this->listeners('hash')) > 0) {
+        $this->context = \hash_init(...$options);
+        $this->stream->once('close', function () use ($algo): void {
+            $hash = \hash_final($this->context, true);
+            if (\count($this->listeners('hash')) > 0) {
                 $this->emit('hash', [
-                    bin2hex($hash),
+                    \bin2hex($hash),
                     $algo,
                 ]);
             }
-            if (count($this->listeners('hash_raw')) > 0) {
+            if (\count($this->listeners('hash_raw')) > 0) {
                 $this->emit('hash_raw', [
                     $hash,
                     $algo,
@@ -57,20 +57,20 @@ final class WritableStreamHash extends EventEmitter implements WritableStreamInt
 
     public function write($data)
     {
-        hash_update($this->context, $data);
+        \hash_update($this->context, $data);
 
         return $this->stream->write($data);
     }
 
-    public function end($data = null)
+    public function end($data = null): void
     {
         if ($data !== null) {
-            hash_update($this->context, $data);
+            \hash_update($this->context, $data);
         }
         $this->stream->end($data);
     }
 
-    public function close()
+    public function close(): void
     {
         $this->stream->close();
     }

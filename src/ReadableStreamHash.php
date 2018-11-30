@@ -28,24 +28,24 @@ final class ReadableStreamHash extends EventEmitter implements ReadableStreamInt
     {
         $this->stream = $stream;
         $options = [$algo];
-        if ($key !== null && strlen($key) > 0) {
+        if ($key !== null && \strlen($key) > 0) {
             $options[] = HASH_HMAC;
             $options[] = $key;
         }
-        $this->context = hash_init(...$options);
-        $this->stream->on('data', function ($data) {
-            hash_update($this->context, $data);
+        $context = \hash_init(...$options);
+        $this->stream->on('data', function ($data) use ($context): void {
+            \hash_update($context, $data);
             $this->emit('data', [$data]);
         });
-        $this->stream->once('close', function () use ($algo) {
-            $hash = hash_final($this->context, true);
-            if (count($this->listeners('hash')) > 0) {
+        $this->stream->once('close', function () use ($context, $algo): void {
+            $hash = \hash_final($context, true);
+            if (\count($this->listeners('hash')) > 0) {
                 $this->emit('hash', [
-                    bin2hex($hash),
+                    \bin2hex($hash),
                     $algo,
                 ]);
             }
-            if (count($this->listeners('hash_raw')) > 0) {
+            if (\count($this->listeners('hash_raw')) > 0) {
                 $this->emit('hash_raw', [
                     $hash,
                     $algo,
@@ -76,7 +76,7 @@ final class ReadableStreamHash extends EventEmitter implements ReadableStreamInt
         return $this->stream->pipe($dest, $options);
     }
 
-    public function close()
+    public function close(): void
     {
         $this->stream->close();
     }

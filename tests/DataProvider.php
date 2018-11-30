@@ -4,9 +4,20 @@ namespace WyriHaximus\React\Tests\Stream\Hash;
 
 final class DataProvider
 {
+    private const INCOMPATIBLE_ALGOS = [
+        'adler32',
+        'crc32',
+        'crc32b',
+        'fnv132',
+        'fnv1a32',
+        'fnv164',
+        'fnv1a64',
+        'joaat',
+    ];
+
     public function provideData()
     {
-        foreach (hash_algos() as $algo) {
+        foreach (\hash_algos() as $algo) if (!\in_array($algo, self::INCOMPATIBLE_ALGOS)) {
             yield [$algo, 'a'];
             yield [$algo, 'abc'];
             yield [$algo, 'abcdefg'];
@@ -16,10 +27,10 @@ final class DataProvider
             yield [$algo, 'abcdefghijklmnopqrst'];
             yield [$algo, 'abcdefghijklmnopqrstuvw'];
             yield [$algo, 'abcdefghijklmnopqrstuvwxyz'];
-            foreach (range(128, 256) as $size) {
-                yield [$algo, str_pad('a', $size)];
+            foreach (\range(128, 256) as $size) {
+                yield [$algo, \str_pad('a', $size)];
             }
-            yield [$algo, str_pad('a', 1337)];
+            yield [$algo, \str_pad('a', 1337)];
         }
     }
 }
