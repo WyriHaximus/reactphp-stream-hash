@@ -29,7 +29,7 @@ final class ReadableStreamHash extends EventEmitter implements ReadableStreamInt
         $this->stream = $stream;
         $options = [$algo];
         if ($key !== null && \strlen($key) > 0) {
-            $options[] = HASH_HMAC;
+            $options[] = \HASH_HMAC;
             $options[] = $key;
         }
         $context = \hash_init(...$options);
