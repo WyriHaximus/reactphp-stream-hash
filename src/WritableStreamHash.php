@@ -28,7 +28,7 @@ final class WritableStreamHash extends EventEmitter implements WritableStreamInt
         $this->stream = $stream;
         $options = [$algo];
         if ($key !== null && \strlen($key) > 0) {
-            $options[] = HASH_HMAC;
+            $options[] = \HASH_HMAC;
             $options[] = $key;
         }
         $this->context = \hash_init(...$options);
