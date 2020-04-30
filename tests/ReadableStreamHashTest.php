@@ -23,8 +23,10 @@ final class ReadableStreamHashTest extends TestCase
         $catchedRawHash = null;
         $catchedAlgo = null;
         $loop = Factory::create();
+        $pipeThroughStream = new ThroughStream();
         $throughStream = new ThroughStream();
         $stream = new ReadableStreamHash($throughStream, $algo);
+        $stream->pipe($pipeThroughStream);
         $stream->on('hash', function ($hash, $algo) use (&$catchedHash, &$catchedAlgo): void {
             $catchedHash = $hash;
             $catchedAlgo = $algo;
@@ -36,7 +38,7 @@ final class ReadableStreamHashTest extends TestCase
             $throughStream->write($data);
             $throughStream->end();
         });
-        self::assertSame($data, await(buffer($stream), $loop));
+        self::assertSame($data, await(buffer($pipeThroughStream), $loop));
         self::assertSame($algo, $catchedAlgo);
         self::assertSame(\hash($algo, $data), $catchedHash);
         self::assertSame(\hash($algo, $data, true), $catchedRawHash);
@@ -52,8 +54,10 @@ final class ReadableStreamHashTest extends TestCase
         $catchedRawHash = null;
         $catchedAlgo = null;
         $loop = Factory::create();
+        $pipeThroughStream = new ThroughStream();
         $throughStream = new ThroughStream();
         $stream = new ReadableStreamHash($throughStream, $algo, $key);
+        $stream->pipe($pipeThroughStream);
         $stream->on('hash', function ($hash, $algo) use (&$catchedHash, &$catchedAlgo): void {
             $catchedHash = $hash;
             $catchedAlgo = $algo;
@@ -65,7 +69,7 @@ final class ReadableStreamHashTest extends TestCase
             $throughStream->write($data);
             $throughStream->end();
         });
-        self::assertSame($data, await(buffer($stream), $loop));
+        self::assertSame($data, await(buffer($pipeThroughStream), $loop));
         self::assertSame($algo, $catchedAlgo);
         self::assertSame(\hash_hmac($algo, $data, $key), $catchedHash);
         self::assertSame(\hash_hmac($algo, $data, $key, true), $catchedRawHash);
