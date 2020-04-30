@@ -8,6 +8,7 @@ final class DataProvider
         'adler32',
         'crc32',
         'crc32b',
+        'crc32c',
         'fnv132',
         'fnv1a32',
         'fnv164',
@@ -31,6 +32,9 @@ final class DataProvider
                 yield [$algo, \str_pad('a', $size)];
             }
             yield [$algo, \str_pad('a', 1337)];
+            foreach (range(1, 128) as $size) {
+                yield [$algo, \bin2hex(random_bytes($size))];
+            }
         }
     }
 }

@@ -37,7 +37,7 @@ final class ReadableStreamHash extends EventEmitter implements ReadableStreamInt
             \hash_update($context, $data);
             $this->emit('data', [$data]);
         });
-        $this->stream->once('close', function () use ($context, $algo): void {
+        $this->stream->once('end', function () use ($context, $algo): void {
             $hash = \hash_final($context, true);
             if (\count($this->listeners('hash')) > 0) {
                 $this->emit('hash', [
@@ -51,9 +51,9 @@ final class ReadableStreamHash extends EventEmitter implements ReadableStreamInt
                     $algo,
                 ]);
             }
-            $this->emit('close');
+            $this->emit('end');
         });
-        Util::forwardEvents($stream, $this, ['error', 'end']);
+        Util::forwardEvents($stream, $this, ['error', 'close']);
     }
 
     public function isReadable()
@@ -73,7 +73,7 @@ final class ReadableStreamHash extends EventEmitter implements ReadableStreamInt
 
     public function pipe(WritableStreamInterface $dest, array $options = [])
     {
-        return $this->stream->pipe($dest, $options);
+        return Util::pipe($this, $dest, $options);
     }
 
     public function close(): void
